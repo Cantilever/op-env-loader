@@ -4,6 +4,7 @@ import { item, validateCli } from '@1password/op-js'
 import fs from 'fs'
 import chalk from 'chalk'
 import readline from 'readline'
+import { diffLines } from 'diff'
 
 // Get the UUID from command line arguments
 const args = process.argv.slice(2)
@@ -37,16 +38,55 @@ if (!env) {
 }
 
 if (fs.existsSync('.env')) {
-    rl.question(chalk.yellow('Warning: An .env file already exists. Do you want to overwrite it? (yes/no): '), (answer) => {
-        if (answer.toLowerCase() === 'yes' || answer.toLowerCase() === 'y') {
-            writeEnvFile()
-        } else {
-            console.log(chalk.blue('Operation cancelled. Existing .env file was not modified.'))
-            rl.close()
-            process.exit(0)
-        }
-    })
+    // Read the local .env file
+    const localEnv = fs.readFileSync('.env', 'utf8')
+    const remoteEnv = `${env.value}\n`
+    
+    // Compare the local and remote .env files
+    const diff = diffLines(localEnv, remoteEnv)
+    
+    // Check if there are differences
+    const hasDifferences = diff.some(part => part.added || part.removed)
+    
+    if (!hasDifferences) {
+        console.log(chalk.green('The local .env file is identical to the remote one. No changes needed.'))
+        rl.close()
+        process.exit(0)
+    } else {
+        // Display the differences
+        console.log(chalk.yellow('Differences between local and remote .env files:'))
+        diff.forEach(part => {
+            // Use different colors for additions and removals
+            const color = part.added ? chalk.green :
+                          part.removed ? chalk.red : chalk.grey
+            
+            // Only show the first line of each change to avoid exposing sensitive data
+            const lines = part.value.split('\n')
+            const displayValue = lines.map(line => {
+                if (!line) return line
+                // Mask the actual values to protect sensitive data
+                const keyValue = line.split('=')
+                if (keyValue.length > 1) {
+                    return keyValue[0] + '=[value hidden]'
+                }
+                return line
+            }).join('\n')
+            
+            process.stdout.write(color(displayValue))
+        })
+        
+        rl.question(chalk.yellow('\nDo you want to overwrite the local .env file with the remote one? (yes/no): '), (answer) => {
+            if (answer.toLowerCase() === 'yes' || answer.toLowerCase() === 'y') {
+                writeEnvFile()
+            } else {
+                console.log(chalk.blue('Operation cancelled. Existing .env file was not modified.'))
+                rl.close()
+                process.exit(0)
+            }
+        })
+    }
 } else {
+    console.log(chalk.blue('No local .env file found. Creating a new one.'))
     writeEnvFile()
 }
 

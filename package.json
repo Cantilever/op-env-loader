@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "@1password/op-js": "^0.1.13",
-    "chalk": "^5.4.1"
+    "chalk": "^5.4.1",
+    "diff": "^7.0.0"
   },
   "author": "Cantilever",
   "license": "MIT"

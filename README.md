@@ -76,7 +76,7 @@ MIT
 
 ## Contributing
 
-- Feel free to submit issues or pull requests to improve this package.
+- Feel free to submit [issues](https://github.com/Cantilever/op-env-loader/issues) or [pull requests](https://github.com/Cantilever/op-env-loader/pulls) to improve this package.
 
 ## Author
 

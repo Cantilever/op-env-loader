@@ -1,0 +1,18 @@
+{
+  "name": "op-env-loader",
+  "version": "1.0.0",
+  "description": "A script to pull a document from 1Password and save it as an .env file",
+  "type": "module",
+  "bin": {
+    "op-env-loader": "./index.mjs"
+  },
+  "scripts": {
+    "start": "node index.mjs"
+  },
+  "dependencies": {
+    "@1password/op-js": "^0.1.13",
+    "chalk": "^5.4.1"
+  },
+  "author": "Cantilever",
+  "license": "MIT"
+}

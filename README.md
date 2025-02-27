@@ -74,6 +74,13 @@ op-env-loader <1password-uuid>
 
 MIT
 
+## Contributing
+
+- Feel free to submit issues or pull requests to improve this package.
+
 ## Author
 
-Cantilever 
+Cantilever
+
+![npm](https://img.shields.io/npm/v/op-env-loader)
+![License](https://img.shields.io/npm/l/op-env-loader)
